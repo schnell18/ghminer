@@ -1,0 +1,47 @@
+[build-system]
+requires = ['setuptools', 'setuptools_scm']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'ghminer'
+description = '##### ToDo: Rewrite me #####'
+readme = 'README.rst'
+license = {file = 'LICENSE'}
+authors = [{name='Justin Zhang', email='schnell18@gmail.com'}]
+dependencies = []
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT No Attribution License (MIT-0)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",    
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+requires-python = '>=3.9'
+dynamic = ['version']
+
+[project.scripts]
+#ghminer = 'ghminer.commands:main'
+
+[tools.setuptools]
+package-dir = {'' = 'src'}
+
+[tools.setuptools.dynamic]
+version = {attr = 'ghminer.version.version'}
+
+[tool.setuptools_scm]
+write_to = 'src/ghminer/version.py'
+version_scheme = 'python-simplified-semver'
+local_scheme = 'no-local-version'
+
+[project.urls]
+'Homepage' = 'https://github.com/schnell18/ghminer'
+
+[project.optional-dependencies]
+test=[
+    'tox'
+]
+doc = ['sphinx']
