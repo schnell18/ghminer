@@ -30,7 +30,7 @@ Python environment you are running this script in.
 
 # import local functions
 from argparse import ArgumentParser
-from datagrab.github import grab_commits
+from ghminer.retriever import grab_commits
 
 
 def _parse_args():
