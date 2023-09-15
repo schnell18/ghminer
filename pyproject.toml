@@ -9,7 +9,7 @@ readme = 'README.rst'
 license = {file = 'LICENSE'}
 authors = [{name='Justin Zhang', email='schnell18@gmail.com'}]
 dependencies = [
-    "semver==3.0.1",
+    "requests==2.31.0",
     "semver==3.0.1",
     "PyGithub==2.0.1-preview",
     "isodate==0.6.1",
@@ -48,7 +48,6 @@ local_scheme = 'no-local-version'
 'Homepage' = 'https://github.com/schnell18/ghminer'
 
 [project.optional-dependencies]
-test=[
-    'tox'
-]
+dev = ["bumpver", "pip-tools"]
+test = [ 'tox' ]
 doc = ['sphinx']
