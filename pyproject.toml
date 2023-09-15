@@ -4,30 +4,38 @@ build-backend = 'setuptools.build_meta'
 
 [project]
 name = 'ghminer'
-description = '##### ToDo: Rewrite me #####'
+description = 'Github mining tool for MSR research'
 readme = 'README.rst'
 license = {file = 'LICENSE'}
 authors = [{name='Justin Zhang', email='schnell18@gmail.com'}]
-dependencies = []
+dependencies = [
+    "semver==3.0.1",
+    "semver==3.0.1",
+    "PyGithub==2.0.1-preview",
+    "isodate==0.6.1",
+    "pandas==2.0.1",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT No Attribution License (MIT-0)",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",    
     "Programming Language :: Python :: Implementation :: CPython",
 ]
-requires-python = '>=3.9'
+requires-python = '>=3.7'
 dynamic = ['version']
 
 [project.scripts]
 #ghminer = 'ghminer.commands:main'
 
 [tools.setuptools]
-package-dir = {'' = 'src'}
+  package-dir = {'' = 'src'}
 
 [tools.setuptools.dynamic]
 version = {attr = 'ghminer.version.version'}

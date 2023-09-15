@@ -1,1 +1,1 @@
-"""ghminer."""
+"""Packages for github mining."""

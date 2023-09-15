@@ -1,3 +1,10 @@
+.DS_Store
+credential.ini
+*-debug.py
+*.log
+*.bak
+*.swo
+*.swp
 *.egg
 *.egg/
 *.egg-info/
