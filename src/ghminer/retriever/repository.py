@@ -14,19 +14,30 @@ from timeit import default_timer as timer
 
 
 def _search_repo_iteratively(
-        client, dict_list, fork, stars, start, end, lang, topics=[]):
+        client, dict_list, fork, stars,
+        start, end, lang, topics=[], trace=False):
     fork_str = "true" if fork else "false"
     query_str = f"stars:>={stars} fork:{fork_str} created:{start}..{end}"
     if lang is not None and lang != '':
         query_str = f"lang:{lang} {query_str}"
     if topics is not None and len(topics) > 0:
-        for topic in topics:
-            _do_search(client, f"topic:{topic} {query_str}", dict_list)
+        # github API supports up to 5 ORs
+        n = 6
+        sub_lists = [topics[i:i+n] for i in range(0, len(topics), n)]
+        for sub_list in sub_lists:
+            _do_search(
+                client,
+                f"{' OR '.join(sub_list)} in:topics {query_str}",
+                dict_list,
+                trace
+            )
     else:
-        _do_search(client, query_str, dict_list)
+        _do_search(client, query_str, dict_list, trace)
 
 
-def _do_search(client, query_str, dict_list):
+def _do_search(client, query_str, dict_list, trace):
+    if trace:
+        print(f"Query Str: {query_str}")
     repositories = client.search_repositories(
         query_str, sort="stars", order="desc"
     )
@@ -83,7 +94,8 @@ def collect_data(
         for t in daterange(date_range[0], date_range[1], slice):
             _search_repo_iteratively(
                 client, dict_list, fork, stars,
-                format_date(t[0]), format_date(t[1]), lang, topics=topics
+                format_date(t[0]), format_date(t[1]), lang,
+                topics=topics, trace=trace
             )
         t1 = timer()
         if trace:
@@ -94,9 +106,11 @@ def collect_data(
                 t1-t0
             ))
         df = pd.DataFrame(dict_list)
-        df.to_csv("%s/%s-repo-%d-%s-%s.csv" % (
+        df.drop_duplicates(subset=["full_name"], inplace=True)
+        file_name = "%s/%s-repo-%d-%s-%s.csv" % (
             subdir, search_key, stars, date_range[0], date_range[1]
-        ))
+        )
+        df.to_csv(file_name, index=False)
         t2 = timer()
         if trace:
             print("Save %s data between %s and %s took %d seconds" % (
@@ -111,9 +125,11 @@ def collect_data(
         ))
         cost_dfs.append(df)
     combined = pd.concat(cost_dfs)
-    combined.to_csv("%s/%s-repo-%d-combined.csv" % (
+    combined.drop_duplicates(subset=["full_name"], inplace=True)
+    file_name = "%s/%s-repo-%d-combined.csv" % (
         subdir, search_key, stars
-    ))
+    )
+    combined.to_csv(file_name, index=False)
     t4 = timer()
 
     if trace:

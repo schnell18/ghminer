@@ -1,5 +1,5 @@
 import unittest
-from ghminer.parser.gomod import GoMod
+from ghminer.golang.parser.gomod import GoMod
 
 
 class GoModTest(unittest.TestCase):

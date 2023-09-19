@@ -8,10 +8,10 @@ Python environment you are running this script in.
 
 """
 
-import ghminer.parser.parquet as pp
+import ghminer.golang.parquet as pp
 
 from argparse import ArgumentParser
-from ghminer.parser import parse_deps_from_parquet
+from ghminer.golang.parser import parse_deps_from_parquet
 from ghminer.golang import convert_names
 from ghminer.golang import grab_gomod
 from timeit import default_timer as timer
