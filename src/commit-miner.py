@@ -31,6 +31,7 @@ Python environment you are running this script in.
 # import local functions
 from argparse import ArgumentParser
 from ghminer.retriever import grab_commits
+from ghminer.retriever import grab_comments
 from ghminer.parser import save_as_parquet
 from ghminer.parser import parse_xref_from_parquet
 from ghminer.parser import commit_xref_finder
@@ -100,7 +101,21 @@ def _parse_args():
         help='Print trace messages')
     parser_grb.add_argument(
         '--progress-file', default="progress.csv",
-        help='Fail to save commit retrieval progress, default progress.csv')
+        help='File to save commit retrieval progress, default progress.csv')
+
+    parser_grbc = subparsers.add_parser('grab-comment', aliases=['grbc'])
+    parser_grbc.add_argument(
+        '-o', '--output-dir', required=True,
+        help='Path to save output files')
+    parser_grbc.add_argument(
+        '-f', '--repo-list-file', required=True,
+        help='The list of repository to retrieve commits')
+    parser_grbc.add_argument(
+        '-d', '--trace', action="store_true", default=False,
+        help='Print trace messages')
+    parser_grbc.add_argument(
+        '--progress-file', default="progress.csv",
+        help='File to save comment retrieval progress, default progress.csv')
 
     # Parse the arguments
     args = parser.parse_args()
@@ -133,6 +148,20 @@ def _parse_xref_comment(args):
     )
 
 
+def _grab_comments(args):
+    repo_list_file = args.repo_list_file
+    progress_file = args.progress_file
+    subdir = args.output_dir
+    trace = args.trace
+
+    grab_comments(
+        repo_list_file,
+        base_dir=subdir,
+        progress_file=progress_file,
+        trace=trace
+    )
+
+
 def _grab_commits(args):
     repo_list_file = args.repo_list_file
     progress_file = args.progress_file
@@ -159,6 +188,8 @@ if __name__ == "__main__":
       'xrefc': _parse_xref_comment,
       'grab-commit': _grab_commits,
       'grb': _grab_commits,
+      'grab-comment': _grab_comments,
+      'grbc': _grab_comments,
     }
     args = _parse_args()
     routing[args.subparser](args)
