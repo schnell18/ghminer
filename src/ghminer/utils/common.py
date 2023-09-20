@@ -12,7 +12,14 @@ This module includes common functions such as:
 """
 
 import configparser
+import sys
+
 from datetime import date, timedelta
+
+
+def eprint(*args, **kwargs):
+    """Print to stderr."""
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def load_access_token():

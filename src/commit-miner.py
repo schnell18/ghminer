@@ -33,6 +33,8 @@ from argparse import ArgumentParser
 from ghminer.retriever import grab_commits
 from ghminer.parser import save_as_parquet
 from ghminer.parser import parse_xref_from_parquet
+from ghminer.parser import commit_xref_finder
+from ghminer.parser import comment_xref_finder
 
 
 def _parse_args():
@@ -46,8 +48,20 @@ def _parse_args():
         help='Path to source directory containing commits.json files')
     parser_sav.add_argument(
         '-p', '--parquet-file', required=True,
-        help='Path to the .parquet file to store xrefs')
+        help='Path to the .parquet file to store commits')
     parser_sav.add_argument(
+        '-d', '--trace', action="store_true",
+        default=False, help='Print trace messages')
+
+    parser_sav_cmt = subparsers.add_parser(
+        'save-parquet-comment', aliases=['spc'])
+    parser_sav_cmt.add_argument(
+        '-s', '--src-dir', required=True,
+        help='Path to source directory containing comments.json files')
+    parser_sav_cmt.add_argument(
+        '-p', '--parquet-file', required=True,
+        help='Path to the .parquet file to store comments')
+    parser_sav_cmt.add_argument(
         '-d', '--trace', action="store_true",
         default=False, help='Print trace messages')
 
@@ -59,6 +73,18 @@ def _parse_args():
         '-x', '--xref-file', required=True,
         help='Path to the .csv file to store xrefs')
     parser_xref.add_argument(
+        '-d', '--trace', action="store_true",
+        default=False, help='Print trace messages')
+
+    parser_xrefc = subparsers.add_parser(
+        'parse-xref-comment', aliases=['xrefc'])
+    parser_xrefc.add_argument(
+        '-p', '--parquet-file', required=True,
+        help='Path to the .parquet files')
+    parser_xrefc.add_argument(
+        '-x', '--xref-file', required=True,
+        help='Path to the .csv file to store xrefs')
+    parser_xrefc.add_argument(
         '-d', '--trace', action="store_true",
         default=False, help='Print trace messages')
 
@@ -82,11 +108,25 @@ def _parse_args():
 
 
 def _save_parquet(args):
-    save_as_parquet(args.src_dir, args.parquet_file)
+    save_as_parquet(args.src_dir, "commits.json", args.parquet_file)
+
+
+def _save_parquet_comment(args):
+    save_as_parquet(args.src_dir, "comments.json", args.parquet_file)
 
 
 def _parse_xref(args):
     parse_xref_from_parquet(
+        commit_xref_finder,
+        args.parquet_file,
+        args.xref_file,
+        args.trace
+    )
+
+
+def _parse_xref_comment(args):
+    parse_xref_from_parquet(
+        comment_xref_finder,
         args.parquet_file,
         args.xref_file,
         args.trace
@@ -111,8 +151,12 @@ if __name__ == "__main__":
     routing = {
       'save-parquet': _save_parquet,
       'sp': _save_parquet,
+      'save-parquet-comment': _save_parquet_comment,
+      'spc': _save_parquet_comment,
       'parse-xref': _parse_xref,
       'xref': _parse_xref,
+      'parse-xref-comment': _parse_xref_comment,
+      'xrefc': _parse_xref_comment,
       'grab-commit': _grab_commits,
       'grb': _grab_commits,
     }
