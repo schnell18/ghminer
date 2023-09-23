@@ -36,6 +36,7 @@ from ghminer.parser import save_as_parquet
 from ghminer.parser import parse_xref_from_parquet
 from ghminer.parser import commit_xref_finder
 from ghminer.parser import comment_xref_finder
+from ghminer.parser import to_gexf
 
 
 def _parse_args():
@@ -88,6 +89,27 @@ def _parse_args():
     parser_xrefc.add_argument(
         '-d', '--trace', action="store_true",
         default=False, help='Print trace messages')
+
+    parser_gephi = subparsers.add_parser(
+        'to-gephi', aliases=['tg'])
+    parser_gephi.add_argument(
+        '-x', '--xref-file', required=True,
+        help='Path to the .csv file to store xrefs')
+    parser_gephi.add_argument(
+        '-g', '--gexf-file', required=True,
+        help='Path to the gephi .gexf XML file')
+    parser_gephi.add_argument(
+        '--src-col-name', default="src_repo",
+        help='colunm name to represent the source node, default `src_repo`')
+    parser_gephi.add_argument(
+        '--dest-col-name', default="dest_repo",
+        help='colunm name to represent the dest node, default `dest_repo`')
+    parser_gephi.add_argument(
+        '--weight-col-name', default="issue_no",
+        help='colunm name to indicate the weight of xref, default `issue_no`')
+    parser_gephi.add_argument(
+        '--weight-agg-func', default="count",
+        help='aggregation function to use for xref weight, default `count`')
 
     parser_grb = subparsers.add_parser('grab-commit', aliases=['grb'])
     parser_grb.add_argument(
@@ -148,6 +170,17 @@ def _parse_xref_comment(args):
     )
 
 
+def _to_gephi(args):
+    to_gexf(
+        args.xref_file,
+        args.gexf_file,
+        src_col_name=args.src_col_name,
+        dest_col_name=args.dest_col_name,
+        weight_col_name=args.weight_col_name,
+        weight_agg_func=args.weight_agg_func,
+    )
+
+
 def _grab_comments(args):
     repo_list_file = args.repo_list_file
     progress_file = args.progress_file
@@ -178,6 +211,10 @@ def _grab_commits(args):
 
 if __name__ == "__main__":
     routing = {
+      'grab-commit': _grab_commits,
+      'grb': _grab_commits,
+      'grab-comment': _grab_comments,
+      'grbc': _grab_comments,
       'save-parquet': _save_parquet,
       'sp': _save_parquet,
       'save-parquet-comment': _save_parquet_comment,
@@ -186,10 +223,8 @@ if __name__ == "__main__":
       'xref': _parse_xref,
       'parse-xref-comment': _parse_xref_comment,
       'xrefc': _parse_xref_comment,
-      'grab-commit': _grab_commits,
-      'grb': _grab_commits,
-      'grab-comment': _grab_comments,
-      'grbc': _grab_comments,
+      'to-gephi': _to_gephi,
+      'tg': _to_gephi,
     }
     args = _parse_args()
     routing[args.subparser](args)

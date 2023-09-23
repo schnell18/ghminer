@@ -18,4 +18,5 @@ dist/
 htmlcov
 *requirement*.txt
 *.pickle
+*.parquet
 .*venv/
