@@ -34,8 +34,9 @@ from ghminer.retriever import grab_commits
 from ghminer.retriever import grab_comments
 from ghminer.parser import save_as_parquet
 from ghminer.parser import parse_xref_from_parquet
-from ghminer.parser import commit_xref_finder
-from ghminer.parser import comment_xref_finder
+from ghminer.parser import CommentXrefRecordReader
+from ghminer.parser import CommitXrefRecordReader
+from ghminer.parser import CommitSummaryRecordReader
 from ghminer.parser import to_gexf
 
 
@@ -75,6 +76,17 @@ def _parse_args():
         '-x', '--xref-file', required=True,
         help='Path to the .csv file to store xrefs')
     parser_xref.add_argument(
+        '-d', '--trace', action="store_true",
+        default=False, help='Print trace messages')
+
+    parser_sc = subparsers.add_parser('summarize-commit', aliases=['sc'])
+    parser_sc.add_argument(
+        '-p', '--parquet-file', required=True,
+        help='Path to the .parquet files')
+    parser_sc.add_argument(
+        '-s', '--summary-file', required=True,
+        help='Path to the .csv file to store commit summary')
+    parser_sc.add_argument(
         '-d', '--trace', action="store_true",
         default=False, help='Print trace messages')
 
@@ -154,16 +166,25 @@ def _save_parquet_comment(args):
 
 def _parse_xref(args):
     parse_xref_from_parquet(
-        commit_xref_finder,
+        CommitXrefRecordReader(),
         args.parquet_file,
         args.xref_file,
         args.trace
     )
 
 
+def _parse_commit_summary(args):
+    parse_xref_from_parquet(
+        CommitSummaryRecordReader(),
+        args.parquet_file,
+        args.summary_file,
+        args.trace
+    )
+
+
 def _parse_xref_comment(args):
     parse_xref_from_parquet(
-        comment_xref_finder,
+        CommentXrefRecordReader(),
         args.parquet_file,
         args.xref_file,
         args.trace
@@ -223,6 +244,8 @@ if __name__ == "__main__":
       'xref': _parse_xref,
       'parse-xref-comment': _parse_xref_comment,
       'xrefc': _parse_xref_comment,
+      'summarize-commit': _parse_commit_summary,
+      'sc': _parse_commit_summary,
       'to-gephi': _to_gephi,
       'tg': _to_gephi,
     }

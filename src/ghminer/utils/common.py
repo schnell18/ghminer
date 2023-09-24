@@ -15,6 +15,7 @@ import configparser
 import sys
 
 from datetime import date, timedelta
+from isodate import parse_datetime
 
 
 def eprint(*args, **kwargs):
@@ -117,6 +118,25 @@ def yearrange(start_year, end_year, slice):
         s = start_year + periods * slice
         e = s + remainder - 1
         yield (date(s, 1, 1), date(e, 12, 31))
+
+
+def convert_iso_date(iso_str):
+    """Convert ISO-8061 date into `YYYY-MM-DD HH:mm:ss`.
+
+    Parameters
+    ----------
+    iso_str: str
+        the date object
+    Returns
+    -------
+    str
+        the string representing date in `YYYY-MM-DD HH:mm:ss` format
+    """
+    if iso_str:
+        dt = parse_datetime(iso_str)
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        return ""
 
 
 def format_date(d):

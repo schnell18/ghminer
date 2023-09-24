@@ -2,8 +2,9 @@
 
 from .xref import (
     parse_xref_from_parquet,
-    comment_xref_finder,
-    commit_xref_finder,
+    CommitSummaryRecordReader,
+    CommitXrefRecordReader,
+    CommentXrefRecordReader,
 )
 
 from .parquet import (
@@ -17,8 +18,9 @@ from .gephi import (
 
 __all__ = [
     "parse_xref_from_parquet",
-    "comment_xref_finder",
-    "commit_xref_finder",
+    "CommitSummaryRecordReader",
+    "CommitXrefRecordReader",
+    "CommentXrefRecordReader",
     "save_as_parquet",
     "to_gexf",
 ]

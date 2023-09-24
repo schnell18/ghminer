@@ -7,12 +7,12 @@ import pandas as pd
 
 from github import Github
 from datetime import datetime
-from isodate import parse_datetime
 from timeit import default_timer as timer
 from pathlib import Path
 from ..utils import load_access_token
 from ..utils import load_repo_info
 from ..utils.common import daterange
+from ..utils.common import convert_iso_date
 
 
 def _load_partial_commits(repo, branch, start, end, trace=False):
@@ -105,14 +105,6 @@ def _write_json(fh, raw_data):
     fh.write(f"{json.dumps(raw_data)}\n")
 
 
-def _date_conv(iso_str):
-    if iso_str:
-        dt = parse_datetime(iso_str)
-        return dt.strftime("%Y-%m-%d %H:%M:%S")
-    else:
-        return ""
-
-
 def _write_csv(fh, owner, repo_name, default_branch, raw_data):
     author_name = ""
     author_date = None
@@ -126,7 +118,7 @@ def _write_csv(fh, owner, repo_name, default_branch, raw_data):
             if not authr["date"]:
                 author_date = ""
             else:
-                _date_conv(authr["date"])
+                author_date = convert_iso_date(authr["date"])
         veri = cmit.get("verification", None)
         if veri and veri["verified"]:
             verified = 1
