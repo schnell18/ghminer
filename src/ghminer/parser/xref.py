@@ -242,7 +242,7 @@ class CommentXrefRecordReader(RecordReader):
         msg = comment_obj.get('body', '')
         for m in re.finditer(XrefPat, msg):
             if repo != m.group(1):
-                xrefs.append((id, repo, m.group(1), m.group(2)))
+                xrefs.append((f"{id}", repo, m.group(1), m.group(2)))
         return xrefs
 
 
