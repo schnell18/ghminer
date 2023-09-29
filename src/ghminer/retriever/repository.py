@@ -9,6 +9,7 @@ from ..utils.common import format_date
 from ..utils.common import yearrange
 from ..utils import load_access_token
 from github import Github
+from hashlib import md5
 from pathlib import Path
 from timeit import default_timer as timer
 
@@ -142,4 +143,9 @@ def _search_key(lang, topics):
     if topics is not None:
         tpc = "-".join([x.replace(' ', '_') for x in topics])
 
-    return lng or tpc if lng == "" or tpc == "" else f"{lng}_{tpc}"
+    key = lng or tpc if lng == "" or tpc == "" else f"{lng}_{tpc}"
+    key_bytes = bytes(key, "utf-8")
+    if len(key_bytes) > 255:
+        return md5(key_bytes).hexdigest()
+    else:
+        return key

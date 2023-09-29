@@ -77,11 +77,8 @@ def _to_gexf(df, file_name):
             edge_id = md5(bytes(f"{src}-{dest}", "utf-8")).hexdigest()
             weight = df['refs'][ind]
             f.write(
-                '      <edge id="%s" source="%s" target="%s" weight="%s" />\n',
-                edge_id,
-                src,
-                dest,
-                weight,
+                '      <edge id="%s" source="%s" target="%s" weight="%s" />\n'
+                % (edge_id, src, dest, weight)
             )
         f.write("    </edges>\n")
         f.write(footer)
