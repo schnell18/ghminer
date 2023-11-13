@@ -64,5 +64,13 @@ the script `identify-repos.py`. To retrieve commits, use the script
   >>> from ghminer.retriever import collect_data
   >>> collect_data(
           2022, 2023, None, True, 100, 15,
-          "repo.d", "java", trace=trace
+          "repo.d", "java", trace=True
       )
+
+
+Dataset
+=======
+
+The dataset containing the list of Golang repositories and the go.mod 
+can be retrieved from `kaggle <https://www.kaggle.com/datasets/schnell18/golang-github-repositories-and-gomod-of-all-vers>`_.
+
